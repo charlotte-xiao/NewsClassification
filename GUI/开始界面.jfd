@@ -5,7 +5,7 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "hidemode 3"
-			"$columnConstraints": "[fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill]"
+			"$columnConstraints": "[fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill][fill]"
 			"$rowConstraints": "[][][][][][][][][][][][][][][][]"
 		} ) {
 			name: "this"
@@ -15,7 +15,7 @@ new FormModel {
 				"foreground": sfield java.awt.Color red
 				"font": new com.jformdesigner.model.SwingDerivedFont( null, 131072, 20, false )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 7 2 6 3"
+				"value": "cell 7 2 7 3"
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label5"
@@ -27,7 +27,7 @@ new FormModel {
 			add( new FormComponent( "javax.swing.JTextField" ) {
 				name: "textField3"
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 9 6 5 1"
+				"value": "cell 10 6 5 1"
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label3"
@@ -36,10 +36,10 @@ new FormModel {
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 5 8"
 			} )
-			add( new FormComponent( "javax.swing.JTextField" ) {
-				name: "textField2"
+			add( new FormComponent( "javax.swing.JPasswordField" ) {
+				name: "passwordField1"
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 9 8 5 1"
+				"value": "cell 10 8 5 1"
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label4"
@@ -51,7 +51,7 @@ new FormModel {
 			add( new FormComponent( "javax.swing.JTextField" ) {
 				name: "textField4"
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 9 10 3 1"
+				"value": "cell 10 10 3 1"
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "button1"
@@ -59,7 +59,7 @@ new FormModel {
 				"foreground": sfield java.awt.Color blue
 				"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 5, false )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 5 13 5 3"
+				"value": "cell 5 13 6 3"
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "button2"
@@ -67,7 +67,7 @@ new FormModel {
 				"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 5, false )
 				"foreground": sfield java.awt.Color blue
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 11 14"
+				"value": "cell 12 14"
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "button3"
@@ -75,7 +75,7 @@ new FormModel {
 				"foreground": sfield java.awt.Color blue
 				"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 5, false )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 13 14"
+				"value": "cell 14 14"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
