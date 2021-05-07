@@ -19,27 +19,27 @@ def build_dataset(config):  # 语料表是按照字构建
         contents = []
         if path.endswith("xlsx") or path.endswith("xls"):
             workbook = xlrd.open_workbook(path)
-            table = workbook.sheet_by_index(0)
+            table = workbook.sheet_by_index(0) #读取第一个表
             for row_num in range(table.nrows):
                 if row_num == 0:
                     continue
                 # 内容,标签,标题
-                content, label, title = table.row_values(row_num)
-                words_line = []
-                token = (lambda x: [y for y in x])(title + content)
+                content, label, title = table.row_values(row_num)#分别读取内容，标签，标题
+                words_line = [] #先滞为0 ，之后使用索引表示
+                token = (lambda x: [y for y in x])(title + content) #把title和content拼接在一起
                 seq_len = len(token)
                 # pad_size最长为32
-                if pad_size:
-                    if len(token) < pad_size:
-                        token.extend([vocab.get(PAD)] * (pad_size - len(token)))
-                    else:
-                        token = token[:pad_size]
-                        seq_len = pad_size
+               # if pad_size:
+                if len(token) < pad_size:#如果不足32位，扩展为32位
+                    token.extend([vocab.get(PAD)] * (pad_size - len(token)))
+                else:#否则进行截断操作32位
+                    token = token[:pad_size]
+                    seq_len = pad_size
                 # word to id
-                for word in token:
+                for word in token:#找之前词表中的索引，构成1（line）*32（list）的矩阵
                     words_line.append(vocab.get(word, vocab.get(UNK)))
                 contents.append(
-                    (words_line, config.class_list.index(label), seq_len)
+                    (words_line, config.class_list.index(label), seq_len)#通过之前的9分类，得出对应的索引，最大32
                 )
         else:
             with open(path, "r", encoding="UTF-8") as f:
@@ -48,7 +48,7 @@ def build_dataset(config):  # 语料表是按照字构建
                     if not lin:
                         continue
                     # 内容和标签用,分隔(半角)
-                    content, label = lin.split(",")
+                    content, label = lin.split(",")#使用逗号分隔词
                     words_line = []
                     token = (lambda x: [y for y in x])(content)
                     seq_len = len(token)
@@ -67,9 +67,9 @@ def build_dataset(config):  # 语料表是按照字构建
                     contents.append((words_line, int(label), seq_len))
         return contents
 
-    train = load_dataset(config.train_path, config.pad_size)
-    dev = load_dataset(config.dev_path, config.pad_size)
-    test = load_dataset(config.test_path, config.pad_size)
+    train = load_dataset(config.train_path, config.pad_size)#导入训练集
+    dev = load_dataset(config.dev_path, config.pad_size)#导入验证集/工作集
+    test = load_dataset(config.test_path, config.pad_size)#导入测试集
     return vocab, train, dev, test
 
 
@@ -124,7 +124,7 @@ class DatasetIterater(object):
             return self.n_batches
 
 
-def build_iterator(dataset, config):
+def build_iterator(dataset, config):#构建dataset，在pytorch中的每次迭代的小单元
     iter = DatasetIterater(dataset, config.batch_size, config.device)
     return iter
 
