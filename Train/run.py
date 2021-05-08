@@ -7,9 +7,8 @@ import TextRNN as model
 
 if __name__ == '__main__':
     # TextRNN初始化
-    # dataset--数据集路径
-    # embedding--词向量:搜狗新闻:embedding_SougouNews.npz, 腾讯:embedding_Tencent.npz
-    config = model.Config(dataset='News', embedding='embedding_SougouNews.npz')
+    # dataset--数据集根路径
+    config = model.Config(dataset='Train/News')
 
     # 创建随机种子，保证每次结果一样
     np.random.seed(1)  # 生成随机种子
@@ -33,5 +32,5 @@ if __name__ == '__main__':
     Textmodel = model.Model(config).to(config.device)
     init_network(Textmodel)  # 初始化函数
     print(Textmodel.parameters)  # 打印结构
-    train(config, Textmodel, train_iter, dev_iter, test_iter)  # 开始训练，训练函数在train中
+    train(config, Textmodel, train_iter, dev_iter, test_iter)
     print("训练完成..")

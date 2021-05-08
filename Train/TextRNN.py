@@ -10,7 +10,7 @@ class Config(object):
 
     """配置参数"""
 
-    def __init__(self, dataset, embedding):
+    def __init__(self, dataset):
         # 训练集
         self.train_path = dataset + "/data/train.xls"
         # 验证集
@@ -30,7 +30,7 @@ class Config(object):
         self.save_path = dataset + "/save/TextRNN.ckpt"
         # 预训练词向量
         self.embedding_pretrained = torch.tensor(  # 向量格式是tensor
-            np.load(dataset + "/data/" + embedding)["embeddings"].astype(
+            np.load(dataset + "/data/embedding.npz")["embeddings"].astype(
                 "float32"
             )
         )
