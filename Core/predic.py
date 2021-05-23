@@ -49,12 +49,10 @@ def evaluate_single(config, model, data):  # 预测函数
             torch.LongTensor([data[0]]).to(config.device),
             torch.LongTensor([data[2]]).to(config.device)
             )
-        labels = torch.LongTensor([data[1]]).to(config.device)
-        content, label, title = data[3]
+        label = data[3][1]
         print("实际值："+label)
         outputs = model(texts)
-        labels = labels.data.cpu().numpy()
         predic = torch.max(outputs.data, 1)[1].cpu().numpy()
         print("预测值:"+config.class_list[predic.tolist()[0]])
-
+        return config.class_list[predic.tolist()[0]]
 

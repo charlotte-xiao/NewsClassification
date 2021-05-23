@@ -32,8 +32,10 @@ def load_single_dataset(config, data, pad_size=32):
     # 将词转换为词表中对应的索引，构成1（line）*32（list）的矩阵
     for word in token:
         words_line.append(vocab.get(word, vocab.get(UNK)))
+    if label == "":
+        return (words_line, -1, seq_len, [content, label, title])
     return (words_line,
-            config.class_list.index(label), 
+            config.class_list.index(label),
             seq_len, [content, label, title]
             )
 
