@@ -6,7 +6,7 @@ import time
 from utils import get_time_dif
 
 
-def evaluate_multi(config, model, predic_data, flag=True):  # 预测函数
+def evaluate(config, model, predic_data, flag=True):  # 预测函数
     start_time = time.time()
     model.eval()
     loss_total = 0
@@ -42,17 +42,30 @@ def evaluate_multi(config, model, predic_data, flag=True):  # 预测函数
     print("消耗时间:", time_dif)
 
 
-def evaluate_single(config, model, data):  # 预测函数
+def evaluate_single(config, model, data):  # 单条新闻预测函数
     model.eval()
     with torch.no_grad():
         texts = (
             torch.LongTensor([data[0]]).to(config.device),
             torch.LongTensor([data[2]]).to(config.device)
             )
-        label = data[3][1]
-        print("实际值："+label)
         outputs = model(texts)
         predic = torch.max(outputs.data, 1)[1].cpu().numpy()
         print("预测值:"+config.class_list[predic.tolist()[0]])
         return config.class_list[predic.tolist()[0]]
+
+def evaluate_multi(config, model, predic_data):  # 多条新闻预测函数
+    model.eval()
+    with torch.no_grad():
+        for datas in predic_data:
+            texts = (
+                torch.LongTensor([datas[0]]).to(config.device),
+                torch.LongTensor([datas[2]]).to(config.device)
+                )
+            
+            content, label, title = datas[3]
+            print("实际值："+label)
+            outputs = model(texts)
+            predic = torch.max(outputs.data, 1)[1].cpu().numpy()
+            print("预测值"+config.class_list[predic.tolist()[0]])
 

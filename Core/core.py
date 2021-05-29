@@ -15,12 +15,12 @@ class run(object):
         # 加载训练好的模型
         self.Textmodel.load_state_dict(torch.load(self.config.tain_path))
 
-    def single(self, title, content, label="财经"):
-        predic_data = load_single_dataset(self.config, [content, label, title])
+    def single(self, title, content):
+        predic_data = load_single_dataset(self.config, [content, "", title])
         return evaluate_single(self.config, self.Textmodel, predic_data)
 
     def multi(self, path="Core/News/predic/test.xls"):
         # 词表，训练数据，验证数据，测试数据(词向量格式)
-        predic_data = load_multi_dataset(self.config, path)
+        predic_data = load_multi_dataset(self.config, path, "predic")
         evaluate_multi(self.config, self.Textmodel, predic_data)
 
