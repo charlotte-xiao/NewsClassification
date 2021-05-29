@@ -32,20 +32,18 @@ def load_single_dataset(config, data, pad_size=32):
     # 将词转换为词表中对应的索引，构成1（line）*32（list）的矩阵
     for word in token:
         words_line.append(vocab.get(word, vocab.get(UNK)))
-    if label == "":
-        return (words_line, -1, seq_len, [content, label, title])
-    return (words_line,
-            config.class_list.index(label),
-            seq_len, [content, label, title]
-            )
+    return (words_line, -1, seq_len)
+
 
 # 文本数据处理方法定义(表格式)
 
 
-def load_multi_dataset(config, path, pad_size=32):
+def load_multi_dataset(config, path, method=""):
     # 打开词表
     vocab = pkl.load(open(config.vocab_path, "rb"))
     contents = []
+    # pad_size默认为32
+    pad_size = 32
     # excel处理格式
     if path.endswith("xlsx") or path.endswith("xls"):
         workbook = xlrd.open_workbook(path)
@@ -72,11 +70,13 @@ def load_multi_dataset(config, path, pad_size=32):
             # 将词转换为词表中对应的索引，构成1（line）*32（list）的矩阵
             for word in token:
                 words_line.append(vocab.get(word, vocab.get(UNK)))
-            contents.append(
-                # 词内容，结果对应的索引，词长度
-                (words_line, config.class_list.index(label),
-                 seq_len, [content, label, title])
-            )
+            if method == "predict":
+                contents.append(words_line, -1, seq_len, [content, label, title])
+            else:
+                contents.append(
+                    # 词内容，结果对应的索引，词长度
+                    (words_line, config.class_list.index(label), seq_len, [content, label, title])
+                )
     # cls处理格式
     else:
         with open(path, "r", encoding="UTF-8") as f:
@@ -102,66 +102,14 @@ def load_multi_dataset(config, path, pad_size=32):
                 # 将词转换为词表中对应的索引，构成1（line）*32（list）的矩阵
                 for word in token:
                     words_line.append(vocab.get(word, vocab.get(UNK)))
-                contents.append(
-                    # 词内容，结果对应的索引，词长度
-                    (words_line, config.class_list.index(label), seq_len)
-                )
+                if method == "predict":
+                    contents.append(words_line, -1, seq_len, [content, label, title])
+                else:
+                    contents.append(
+                        # 词内容，结果对应的索引，词长度
+                        (words_line, config.class_list.index(label), seq_len, [content, label, title])
+                    )
     return contents
-
-
-class DatasetIterater(object):
-    def __init__(self, batches, batch_size, device):
-        self.batch_size = batch_size
-        self.batches = batches
-        self.n_batches = len(batches) // batch_size
-        self.residue = False  # 记录batch数量是否为整数
-        if len(batches) % self.n_batches != 0:
-            self.residue = True
-        self.index = 0
-        self.device = device
-
-    def _to_tensor(self, datas):
-        x = torch.LongTensor([_[0] for _ in datas]).to(self.device)
-        y = torch.LongTensor([_[1] for _ in datas]).to(self.device)
-        # pad前的长度(超过pad_size的设为pad_size)
-        seq_len = torch.LongTensor([_[2] for _ in datas]).to(self.device)
-        return (x, seq_len), y
-
-    def __next__(self):
-        if self.residue and self.index == self.n_batches:
-            batches = self.batches[
-                self.index * self.batch_size: len(self.batches)
-            ]
-            self.index += 1
-            batches = self._to_tensor(batches)
-            return batches
-
-        elif self.index > self.n_batches:
-            self.index = 0
-            raise StopIteration
-        else:
-            batches = self.batches[
-                self.index
-                * self.batch_size: (self.index + 1)
-                * self.batch_size
-            ]
-            self.index += 1
-            batches = self._to_tensor(batches)
-            return batches
-
-    def __iter__(self):
-        return self
-
-    def __len__(self):
-        if self.residue:
-            return self.n_batches + 1
-        else:
-            return self.n_batches
-
-
-def build_iterator(dataset, config):  # 构建dataset，按照一个batch数据大小进行训练
-    iter = DatasetIterater(dataset, config.batch_size, config.device)
-    return iter
 
 
 def get_time_dif(start_time):  # 获取已使用时间
