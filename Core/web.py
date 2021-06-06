@@ -1,6 +1,6 @@
 import os
 import uuid
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, current_app
 from core import run
 app = Flask(__name__)
 pwd = os.path.join(os.path.dirname(__file__), 'News')
@@ -11,6 +11,11 @@ model = run()
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/', methods=['GET'])
+def mothod():
+    return current_app.send_static_file('index.html')
 
 
 @app.route('/single', methods=['POST'])

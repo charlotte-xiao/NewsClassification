@@ -133,3 +133,5 @@ dmypy.json
 .vscode/
 out/
 *.iml
+Core/News/download/*
+Core/News/upload/*
