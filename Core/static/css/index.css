@@ -1,0 +1,51 @@
+.article-title-container{
+	display: flex;
+	align-items: center;
+	margin-bottom: 1.25rem;
+	margin-top: 2.25rem;
+}
+.upload-container{
+	display: flex;
+	justify-content: center;
+	border: 0.1425rem solid rgb(200,200,200);
+	border-radius: 1.25rem;
+	padding:3.25rem 1.25rem 1.25rem 1.25rem;
+	margin-bottom: 1.25rem;
+	margin-top: 2.25rem;
+}
+.margin-button{
+	margin-bottom: 2rem;
+	margin-top: 2rem;
+}
+.predict-button{
+	margin-left: 1rem;
+	margin-right: 0.5rem;
+}
+.footer{
+	width: 100%;
+	line-height: 1;
+	position: relative;
+	padding: 20px 20px;
+	font-size: 14px;
+	text-align: center;
+}
+.home-banner {
+  weight: 100vh;
+  height: 65vh;
+  background: url("https://www.static.xiaostudy.cn/home.jpg") center center /
+    cover no-repeat;
+  background-color: #49b1f5;
+  background-attachment: fixed;
+  text-align: center;
+  color: #fff !important;
+  animation: header-effect 1s;
+}
+.banner-container {
+  padding-top: 25vh;
+  line-height: 1.2;
+  color: #eee;
+}
+.upload-download {
+	margin-bottom: 1.25rem;
+	margin-top: 2.25rem;
+}

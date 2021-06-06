@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<!-- import CSS -->
+	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+	<link rel="stylesheet" href="static/css/index.css">
+
+</head>
+
+<body>
+	<div id="app">
+		<el-container>
+			<el-header>
+				<el-menu :default-active="activeIndex" mode="horizontal" @select="handleSelect">
+					<el-menu-item index="0">首页</el-menu-item>
+					<el-menu-item index="1">预测</el-menu-item>
+					<el-menu-item index="2">文件</el-menu-item>
+				</el-menu>
+			</el-header>
+			<el-main>
+				<el-card class="main-card">
+					<el-breadcrumb separator-class="el-icon-arrow-right" v-if="activeIndex != '0'">
+						<el-breadcrumb-item>首页</el-breadcrumb-item>
+						<el-breadcrumb-item>{{content}}</el-breadcrumb-item>
+					</el-breadcrumb>
+					<!-- 首页 -->
+					<div v-if="activeIndex == '0'">
+						<!-- 内容 -->
+						<div class="home-banner">
+							<div class="banner-container">
+								<h1 style="font-size: 2rem;">NLP新闻文本分类</h1>
+								<div style="font-size: 1.5rem;">{{ hitokoto }} |</div>
+							</div>
+						</div>
+					</div>
+					<!-- 单条新闻预测 -->
+					<div v-if="activeIndex == '1'">
+						<div class="article-title-container">
+							<el-input v-model="title" placeholder="请输入新闻标题"></el-input>
+							<el-button type="primary" size="medium" class="predict-button" @click="single">预测
+							</el-button>
+							<el-button type="primary" size="medium" class="predict-button" plain @click="clear">清空
+							</el-button>
+						</div>
+						<div>
+							<el-input type="textarea" :rows="16" placeholder="请输入内容..." v-model="textarea">
+							</el-input>
+						</div>
+						<el-dialog title="预测信息" :visible.sync="dialogVisible" width="30%">
+							<span>{{predictInfo}}</span>
+							<span slot="footer" class="dialog-footer">
+								<el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+							</span>
+						</el-dialog>
+					</div>
+					<!-- 多新闻文件分类预测 -->
+					<div v-if="activeIndex == '2'">
+						<div class="upload-container">
+							<div>
+								<input id="inputElement" name="file" type="file" />
+								<div class="el-upload__tip">只能单次上传csv/xlsx文件</div>
+								<div class="margin-button">
+									<el-button :loading="uploadLoading" size="small" type="primary" @click="Myupload">上传文件
+									</el-button>
+									<el-button :disabled="downloadDisabled" size="small" style="margin-left: 10px;"
+										type="success" @click="Mydownload">下载预测结果</el-button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</el-card>
+			</el-main>
+			<el-footer>
+				<div class="footer">&copy; 2021 - {{ new Date().getFullYear() }} By 关于我们打算报名参加软件杯这件事</div>
+			</el-footer>
+		</el-container>
+
+
+	</div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import Element-UI JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<!-- import AXIOS -->
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+	axios.defaults.baseURL = 'http://127.0.0.1:80';
+	new Vue({
+		el: '#app',
+		created() {
+			fetch("https://v1.hitokoto.cn?c=i")
+				.then(res => {
+					return res.json();
+				})
+				.then(({
+					hitokoto
+				}) => {
+					this.hitokoto = hitokoto;
+				});
+		},
+		data() {
+			return {
+				hitokoto: '追求卓越，成功就会找上你。',
+				activeIndex: '0',
+				content: '',
+				title: '运动',
+				textarea: '足球',
+				filename: '',
+				downloadDisabled: true,
+				uploadLoading: false,
+				dialogVisible: false, //弹出框
+				predictInfo: ''
+			}
+		},
+		methods: {
+			clear() {
+				this.title = '';
+				this.textarea = '';
+			},
+			handleSelect(key) {
+				this.activeIndex = key;
+				if (key === '0') {
+					this.content = '';
+				} else if (key === '1') {
+					this.content = '单条新闻分类预测';
+				} else if (key === '2') {
+					this.content = '多新闻文件分类预测';
+				}
+			},
+			single() {
+				var that = this;
+				let param = new FormData();
+				param.append("title", this.title);
+				param.append("content", this.textarea);
+				axios({
+					url: '/single',
+					method: 'post',
+					data: param,
+					headers: {
+						'Access-Control-Allow-Origin': '*',
+						'Content-Type': 'application/x-www-form-urlencoded'
+					}
+				}).then(function (response) {
+					that.$message({
+						message: '恭喜你，预测成功',
+						type: 'success'
+					});
+					console.log(response.data);
+					that.predictInfo = "预测结果为：" + response.data;
+					that.dialogVisible = true;
+				})
+					.catch(function (error) {
+						that.$message.error('出错啦！');
+						console.log(error);
+					});
+			},
+			Myupload() {
+				var that = this;
+				that.filename = '';
+				that.uploadLoading = true;
+				let file = document.getElementById("inputElement").files[0];
+				let param = new FormData();
+				param.append("file", file);
+				axios({
+					url: '/upload',
+					method: 'post',
+					timeout: 10000,
+					data: param,
+					headers: {
+						'Access-Control-Allow-Origin': '*',
+						'Content-Type': 'multipart/form-data'
+					}
+				}).then(res => {
+					if (res.data === "error") {
+						that.$message.error('出错啦!请确保您上传的文件格式等信息正确！');
+					} else {
+						that.$message({
+							message: '上传成功！',
+							type: 'success'
+						});
+						that.filename = res.data;
+						that.downloadDisabled = false;
+					}
+				}).catch(error => {
+					that.$message.error('出错啦!请确保您上传的文件格式等信息正确！');
+					console.log(error);
+				}).finally(()=>{
+					that.uploadLoading = false;
+				});
+			},
+			Mydownload() {
+				var that = this;
+				console.log(that.filename);
+				axios({
+					url: '/download?fileId='+that.filename,
+					method: 'get',
+					responseType: 'blob'
+				}).then(res => {
+					if (res.data === "error") {
+						that.$message.error('文件不存在,下载失败！');
+					} else {
+						that.$message({
+							message: '下载成功！',
+							type: 'success'
+						});
+						const filename = res.headers["content-disposition"];
+						var downloadElement = document.createElement("temp");
+						var href = window.URL.createObjectURL(new Blob([res.data]));
+						downloadElement.href = href;
+						downloadElement.download = decodeURIComponent(filename.split("filename=")[1]);
+						document.body.appendChild(downloadElement);
+						downloadElement.click();
+						document.body.removeChild(downloadElement);
+						window.URL.revokeObjectURL(href);
+					}
+				}).catch(error => {
+					that.$message.error('文件不存在,下载失败！');
+					console.log(error);
+				}).finally(()=>{
+					this.downloadDisabled = true;
+				});
+			}
+		}
+	})
+</script>
+
+</html>
