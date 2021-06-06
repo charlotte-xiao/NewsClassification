@@ -106,8 +106,8 @@
 				hitokoto: '追求卓越，成功就会找上你。',
 				activeIndex: '0',
 				content: '',
-				title: '运动',
-				textarea: '足球',
+				title: '',
+				textarea: '',
 				filename: '',
 				downloadDisabled: true,
 				uploadLoading: false,
@@ -207,8 +207,9 @@
 							type: 'success'
 						});
 						const filename = res.headers["content-disposition"];
-						var downloadElement = document.createElement("temp");
-						var href = window.URL.createObjectURL(new Blob([res.data]));
+						const blob = new Blob([res.data]);
+						var downloadElement = document.createElement("a");
+						var href = window.URL.createObjectURL(blob);
 						downloadElement.href = href;
 						downloadElement.download = decodeURIComponent(filename.split("filename=")[1]);
 						document.body.appendChild(downloadElement);
