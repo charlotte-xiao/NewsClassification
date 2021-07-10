@@ -19,8 +19,8 @@ class run(object):
         predic_data = load_single_dataset(self.config, [content, "", title])
         return evaluate_single(self.config, self.Textmodel, predic_data)
 
-    def multi(self, path="Core/News/predic/test.xls"):
+    def multi(self, inputPath, outputPath):
         # 词表，训练数据，验证数据，测试数据(词向量格式)
-        predic_data = load_multi_dataset(self.config, path, "predic")
-        evaluate_multi(self.config, self.Textmodel, predic_data)
+        predic_data = load_multi_dataset(self.config, inputPath)
+        evaluate_multi(self.config, self.Textmodel, predic_data, outputPath)
 

@@ -49,35 +49,6 @@ def build_dataset(config):
                     # 词内容，结果对应的索引，词长度
                     (words_line, config.class_list.index(label), seq_len)
                 )
-        # cls处理格式
-        else:
-            with open(path, "r", encoding="UTF-8") as f:
-                for line in tqdm(f):
-                    lin = line.strip()
-                    if not lin:
-                        continue
-                    # 内容和标签用,分隔(半角)
-                    content, label, title = table.row_values(row_num)
-                    # 存储每一行内容
-                    words_line = []
-                    # 拼接title和content
-                    token = (lambda x: [y for y in x])(title + content)
-                    seq_len = len(token)
-                    # pad_size最长为32
-                    # 如果不足32位，扩展为32位
-                    if len(token) < pad_size:
-                        token.extend([vocab.get(PAD)] * (pad_size - len(token)))
-                    # 否则进行截断为32位
-                    else:
-                        token = token[:pad_size]
-                        seq_len = pad_size
-                    # 将词转换为词表中对应的索引，构成1（line）*32（list）的矩阵
-                    for word in token:
-                        words_line.append(vocab.get(word, vocab.get(UNK)))
-                    contents.append(
-                        # 词内容，结果对应的索引，词长度
-                        (words_line, config.class_list.index(label), seq_len)
-                    )
         return contents
     train = load_dataset(config.train_path, config.pad_size)  # 导入训练集
     dev = load_dataset(config.dev_path, config.pad_size)  # 导入验证集集

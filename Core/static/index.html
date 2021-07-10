@@ -60,7 +60,7 @@
 						<div class="upload-container">
 							<div>
 								<input id="inputElement" name="file" type="file" />
-								<div class="el-upload__tip">只能单次上传csv/xlsx文件</div>
+								<div class="el-upload__tip">只能单次上传xlsx文件</div>
 								<div class="margin-button">
 									<el-button :loading="uploadLoading" size="small" type="primary" @click="Myupload">上传文件
 									</el-button>
@@ -159,6 +159,10 @@
 			},
 			Myupload() {
 				var that = this;
+				that.$message({
+						message: '开始上传并预测,请耐心等待1-5分钟~',
+						type: 'success'
+					});
 				that.filename = '';
 				that.uploadLoading = true;
 				let file = document.getElementById("inputElement").files[0];
@@ -167,7 +171,7 @@
 				axios({
 					url: '/upload',
 					method: 'post',
-					timeout: 10000,
+					timeout: 300000,
 					data: param,
 					headers: {
 						'Access-Control-Allow-Origin': '*',
@@ -178,7 +182,7 @@
 						that.$message.error('出错啦!请确保您上传的文件格式等信息正确！');
 					} else {
 						that.$message({
-							message: '上传成功！',
+							message: '预测完成！',
 							type: 'success'
 						});
 						that.filename = res.data;

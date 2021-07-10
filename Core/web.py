@@ -4,7 +4,7 @@ from flask import Flask, request, send_file, current_app
 from core import run
 app = Flask(__name__)
 pwd = os.path.join(os.path.dirname(__file__), 'News')
-ALLOWED_EXTENSIONS = {'xlsx', 'csv'}
+ALLOWED_EXTENSIONS = {'xlsx'}
 model = run()
 
 
@@ -29,17 +29,12 @@ def single():
 def upload_file():
     file = request.files['file']
     if file.filename != '' and allowed_file(file.filename):
-        filename = ''.join(str(uuid.uuid4()).split('-')) \
-            + "." + file.filename.rsplit('.', 1)[1].lower()
-        file.save(os.path.join(pwd, "upload", filename))
-        # --------中间执行过程------------ #
-
-
-
-        # ------------略----------------- #
-        file.seek(0)
-        file.save(os.path.join(pwd, "download", filename))
-        return filename
+        filename = ''.join(str(uuid.uuid4()).split('-'))
+        inputFilePath = os.path.join(pwd, "upload", filename + "." + file.filename.rsplit('.', 1)[1].lower())
+        outputFilePath = os.path.join(pwd, "download", filename + ".xls")
+        file.save(inputFilePath)
+        model.multi(inputFilePath, outputFilePath)
+        return filename + ".xls"
     return 'error'
 
 
@@ -55,4 +50,3 @@ def download_file():
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=80)
-
