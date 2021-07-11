@@ -25,20 +25,18 @@ def build_dataset(config):
             # 读取第一个表
             table = workbook.sheet_by_index(0)
             for row_num in range(table.nrows):
-                if row_num == 0:
-                    continue
-                # 内容,标签,标题
-                content, label, title = table.row_values(row_num)
+                # 标题,内容,标签
+                title, content, label = table.row_values(row_num)
                 # 存储每一行内容
                 words_line = []
                 # 拼接title和content
                 token = (lambda x: [y for y in x])(title + content)
                 seq_len = len(token)
-                # pad_size最长为32
-                # 如果不足32位，扩展为32位
+                # pad_size最长为64
+                # 如果不足64位，扩展为64位
                 if len(token) < pad_size:
                     token.extend([vocab.get(PAD)] * (pad_size - len(token)))
-                # 否则进行截断为32位
+                # 否则进行截断为64位
                 else:
                     token = token[:pad_size]
                     seq_len = pad_size

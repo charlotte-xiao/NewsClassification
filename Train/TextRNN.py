@@ -45,7 +45,7 @@ class Config(object):
         self.num_classes = len(self.class_list)  # 类别数 即10个分类
         self.num_epochs = 20  # epoch数 一个轮回就是一个epoch
         self.batch_size = 128  # mini-batch大小 同时训练多少条数据
-        self.pad_size = 32  # 每句话处理成的长度(短填长切) 提取每一个文段的前32个字，少于32自动填充
+        self.pad_size = 64  # 每句话处理成的长度(短填长切) 提取每一个文段的前64个字，少于64自动填充
         self.learning_rate = 1e-3  # 学习率
         # 字向量维度, 这里使用了预训练词向量
         # 一个将离散变量转为连续向量表示的一个方式，类似于稀疏表节省空间

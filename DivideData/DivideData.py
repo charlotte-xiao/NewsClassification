@@ -4,9 +4,9 @@ import xlwt
 import numpy as np
 
 #主要目的：把download文件分割成训练集和测试集
-data_path = "./Test/download.xlsx"
-train_file = "./Test/train.xls"
-test_file = "./Test/test.xls"
+data_path = "./Data/download.xls"
+train_file = "./Data/train.xls"
+test_file = "./Data/test.xls"
 
 #定义一个函数把一个excel文件转换为一个字典，把value保存到一个excel文件中
 def write_excel_xls_append(path, value):
@@ -24,7 +24,7 @@ sheet = data.sheet_by_index(0)#读取第一个表
 list = []
 for i in range(sheet.nrows):
     list.append(i)#对所有行进行初始化，加到list中
-test_rows = random.sample(list, int(sheet.nrows * 0.1))#0.1是一个参数，如果是1000个，900个是训练集，100个测试集合
+test_rows = random.sample(list, int(sheet.nrows * 0.2))#0.3是一个参数，如果是1000个，800个是训练集，200个测试集合
 
 for item in test_rows:
     list.remove(item)#把测试集的序列移出去
