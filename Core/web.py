@@ -4,7 +4,7 @@ from flask import Flask, request, send_file, current_app
 from core import run
 app = Flask(__name__)
 pwd = os.path.join(os.path.dirname(__file__), 'News')
-ALLOWED_EXTENSIONS = {'xlsx'}
+ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 model = run()
 
 

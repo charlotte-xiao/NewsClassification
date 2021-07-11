@@ -22,8 +22,6 @@ class Config(object):
         self.vocab_path = dataset + "/data/vocab.pkl"
         # 训练好的模型路径
         self.tain_path = dataset + "/model/TextRNN.ckpt"
-        # 结果生成路径
-        self.result_path = dataset + '/result/'
         # 预训练词向量
         self.embedding_pretrained = torch.tensor(  # 向量格式是tensor
             np.load(dataset + "/data/embedding.npz")["embeddings"].astype(

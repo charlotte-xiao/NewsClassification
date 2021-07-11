@@ -9,7 +9,7 @@ class run(object):
     def __init__(self):
         # TextRNN初始化
         # dataset--数据集根路径
-        self.config = model.Config(dataset='Core/News')
+        self.config = model.Config(dataset='./News')
         # 根据config进行Textmodel初始化
         self.Textmodel = model.Model(self.config).to(self.config.device)
         # 加载训练好的模型
